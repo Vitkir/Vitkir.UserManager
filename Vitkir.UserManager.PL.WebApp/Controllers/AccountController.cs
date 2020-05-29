@@ -91,14 +91,14 @@ namespace Vitkir.UserManager.PL.WebApp.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult DigitalSignatureLogin([Bind(Include = "Login, Password")] DigitalSignatureAuthentication model,
+		public ActionResult DigitalSignatureLogin([Bind(Include = "Login, Sign")] DigitalSignatureAuthentication model,
 			string returnUrl)
 		{
 			//todo
 			if (ModelState.IsValid && accountLogic.AccountExist(model.Login))
 			{
 				var account = accountLogic.Get(model.Login);
-				if ((account.Login, account.Password) == (model.Login, model.Password))
+				if (account.Login == model.Login && model.VerifySignature())
 				{
 					FormsAuthentication.SetAuthCookie(model.Login, true);
 					if (string.IsNullOrWhiteSpace(returnUrl))
@@ -108,7 +108,7 @@ namespace Vitkir.UserManager.PL.WebApp.Controllers
 					return Redirect(returnUrl);
 				}
 			}
-			TempData["Error message"] = "Uncorrect login or password";
+			TempData["Error message"] = "Uncorrect login or digital signature";
 			return View(model);
 		}
 

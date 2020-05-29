@@ -1,29 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.ComponentModel.DataAnnotations;
+using Vitkir.UserManager.Common.DigitalSignatureWorker;
 using Vitkir.UserManager.Common.Entities;
 
 namespace Vitkir.UserManager.PL.WebApp.Models.Account
 {
 	public class DigitalSignatureAuthentication : AbstractAccountModel
 	{
-		public Role Role { get; set; }
-
-		public byte[] Cms { get; set; }
+		[DataType(DataType.Text)]
+		[Display(Name = "Подпись")]
+		public string Sign { get; set; }
 
 		public DigitalSignatureAuthentication()
 		{
 		}
 
-		public DigitalSignatureAuthentication(string login, byte[] cms) : base(login)
+		public DigitalSignatureAuthentication(string login, string sign) : base(login)
 		{
-			Cms = cms;
+			Sign = sign;
 		}
 
 		public bool VerifySignature()
 		{
-
+			var auth = new UserAuthentication();
+			return auth.VerifySignature(Sign);
 		}
 	}
 }

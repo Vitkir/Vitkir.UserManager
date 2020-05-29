@@ -1,0 +1,88 @@
+﻿@model Vitkir.UserManager.PL.WebApp.Models.Account.DigitalSignatureAuthentication
+
+@{
+	ViewBag.Title = "DigitalSignatureLogin";
+}
+
+<p><b>Список сертификатов:</b></p>
+<div id="myList">
+	<p id="loading">Идет загрузка ЭЦП Browser plug-in...</p>
+</div>
+
+<div id="myError"></div>
+
+<h2>DigitalSignatureLogin</h2>
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+	@Html.Hidden("ReturnUrl")
+
+	<p id="info_msg" name="CertificateTitle">Сертификат:</p>
+	<div id="item_border" name="CertListBoxToHide">
+		<select size="4" name="CertListBox" id="CertListBox" style="width:100%;resize:none;border:0;">
+		</select>
+	</div>
+
+	<div class="form-horizontal">
+		@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+		<div class="form-group">
+			@Html.LabelFor(model => model.Login, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.Login, new { htmlAttributes = new { @class = "form-control login" } })
+				@Html.ValidationMessageFor(model => model.Login, "", new { @class = "text-danger" })
+			</div>
+		</div>
+		@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+		<div class="form-group">
+			@Html.LabelFor(model => model.Sign, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.Sign, new { htmlAttributes = new { @class = "form-control sign" } })
+				@Html.ValidationMessageFor(model => model.Sign, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-md-offset-2 col-md-10">
+				<input type="submit" value="Login" name="login" class="btn btn-success" />
+			</div>
+		</div>
+	</div>
+}
+<button name="sign" onclick="signed()">Sign</button>
+
+<div>
+	@Html.ActionLink("Registration", "Registration", null, new { @class = "btn btn-primary" })
+	@Html.ActionLink("Password login", "PasswordLogin", null, new { @class = "btn btn-primary" })
+	@Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+	<script>
+		const CADESCOM_CADES_X_LONG_TYPE_1 = 0x5d;
+		const CAPICOM_CURRENT_USER_STORE = 2;
+		const CAPICOM_MY_STORE = "My";
+		const CAPICOM_STORE_OPEN_MAXIMUM_ALLOWED = 2;
+		const CAPICOM_CERTIFICATE_FIND_SUBJECT_NAME = 1;
+	</script>
+	<script>
+		function signed() {
+			let selected = $("select option:selected").val();
+			let sertName = selected.match(".*;")[0];
+			let data = $('.login').val();
+			let prms = SignCreate(sertName.slice(0, -1), data);
+			prms.then(
+				function (result) {
+					$('.sign').val(result);
+				},
+				function (result) {
+					$('.sign').val(result);
+				});
+
+		};
+	</script>
+	@Scripts.Render("~/bundles/jqueryval",
+	"~/Scripts/CadesPlugin/cadesplugin_api.js",
+	"~/Scripts/CadesPlugin/async-crypto.js",
+	"~/Scripts/CadesPlugin/OnloadLoginPage.js")
+}

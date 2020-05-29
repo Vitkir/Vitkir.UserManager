@@ -185,8 +185,14 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\DigitalSignatureLogin\demopage.css" />
+    <Content Include="Content\Img\a3.gif" />
+    <Content Include="Content\Img\application_information.png" />
+    <Content Include="Content\Img\cert.png" />
+    <Content Include="Content\Img\green_dot.png" />
     <Content Include="Content\Img\mock.jpg" />
     <Content Include="Content\Img\pic.jpg" />
+    <Content Include="Content\Img\red_dot.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -205,7 +211,9 @@
     <Content Include="Content\bootstrap-reboot.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
-    <Content Include="Scripts\CadesPlugin\digitalSignatureAuthentication.js" />
+    <Content Include="Scripts\CadesPlugin\async-crypto.js" />
+    <Content Include="Scripts\CadesPlugin\OnloadLoginPage.js" />
+    <Content Include="Scripts\CadesPlugin\sync-crypto.js" />
     <Content Include="Scripts\Custom\AccountDetails.js" />
     <Content Include="Scripts\esm\popper-utils.js" />
     <Content Include="Scripts\esm\popper-utils.min.js" />
@@ -220,6 +228,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="bundleconfig.json" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -334,12 +343,13 @@
     <Content Include="Views\Awards\Delete.cshtml" />
     <Content Include="Views\Users\Delete.cshtml" />
     <Content Include="Views\Users\Details.cshtml" />
-    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\PasswordLogin.cshtml" />
     <Content Include="Views\Account\_AuthenticatedAccountPartial.cshtml" />
     <Content Include="Views\Account\_GuestAccountPartial.cshtml" />
     <Content Include="Views\Account\Registration.cshtml" />
     <Content Include="Views\Account\AdminPage.cshtml" />
     <Content Include="Views\Account\_DetailsAccountPartial.cshtml" />
+    <Content Include="Views\Account\DigitalSignatureLogin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -366,6 +376,10 @@
       <Project>{c7f783e4-69dc-44e4-a8fa-8a225df5a3c2}</Project>
       <Name>Vitkir.UserManager.Common.Dependencies</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Vitkir.UserManager.Common.DigitalSignatureWorker\Vitkir.UserManager.Common.DigitalSignatureWorker.csproj">
+      <Project>{3378c914-7b79-4f2f-83f9-1d62d9ff56d6}</Project>
+      <Name>Vitkir.UserManager.Common.DigitalSignatureWorker</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Vitkir.UserManager.Common.Entities\Vitkir.UserManager.Common.Entities.csproj">
       <Project>{2cde2477-15ae-4dd0-8bd2-01c65be99a71}</Project>
       <Name>Vitkir.UserManager.Common.Entities</Name>
@@ -380,6 +394,17 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Scripts\index.d.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="CERTENROLLLib">
+      <Guid>{728AB348-217D-11DA-B2A4-000E7BBB2B09}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

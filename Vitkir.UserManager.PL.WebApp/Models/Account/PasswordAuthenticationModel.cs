@@ -9,8 +9,6 @@ namespace Vitkir.UserManager.PL.WebApp.Models.Account
 		[DataType(DataType.Password)]
 		public string Password { get; set; }
 
-		public Role Role { get; set; }
-
 		public PasswordAuthenticationModel()
 		{
 		}

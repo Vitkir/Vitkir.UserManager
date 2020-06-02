@@ -1,63 +1,56 @@
-﻿using CryptoPro.Sharpei;
-using System;
-using System.ComponentModel;
-using System.Security.Cryptography;
+﻿using System;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.RegularExpressions;
+using Vitkir.UserManager.Common.Entities;
 
 namespace Vitkir.UserManager.Common.DigitalSignatureWorker
 {
-	public class UserAuthentication
-	{
-		public bool VerifySignature(string cms)
-		{
-			byte[] bytes = Convert.FromBase64String(cms);
-			SignedCms signedCms = new SignedCms();
-			signedCms.Decode(bytes);
+    public class UserAuthentication
+    {
+        public bool VerifySignature(Account account, string cms)
+        {
+            byte[] bytes = Convert.FromBase64String(cms);
+            SignedCms signedCms = new SignedCms();
+            signedCms.Decode(bytes);
 
-			if (signedCms.SignerInfos.Count == 0)
-			{
-				return false;
-			}
-			var signerInfo = signedCms.SignerInfos[0];
-			//var hashoid = signerInfo.DigestAlgorithm;
+            if (signedCms.SignerInfos.Count == 0)
+            {
+                return false;
+            }
+            var signerInfo = signedCms.SignerInfos[0];
 
-			//var content = signedCms.ContentInfo.Content;
-			//var contentStr = Encoding.Unicode.GetString(content);
+            var subjectData = signerInfo.Certificate.SubjectName.Decode(X500DistinguishedNameFlags.UseNewLines);
 
-			//var login = "user";
-			//var bytesLogin = Encoding.Unicode.GetBytes(login);
-			//Gost3411_2012_256CryptoServiceProvider hashAlg = new Gost3411_2012_256CryptoServiceProvider();
-			//var loginhash = hashAlg.ComputeHash(bytesLogin);
-			//var contenthash = hashAlg.ComputeHash(bytesLogin);
-			try
-			{
-				signerInfo.CheckSignature(false);
-				return true;
-			}
-			catch (ArgumentNullException)
-			{
-				return false;
-			}
-			catch (CryptographicException)
-			{
-				return false;
-			}
-			catch (InvalidOperationException)
-			{
-				return false;
-			}
-		}
 
-		public void EncriptMessage()
-		{
+            var name = Regex.Match(subjectData, @"CN=(\S*)\s").Groups[1].Value;
 
-		}
+            if (account.Login != name)
+            {
+                return false;
+            }
 
-		private X509Certificate2 GetSertificate()
-		{
-			throw new NotImplementedException();
-		}
-	}
+            try
+            {
+                signerInfo.CheckSignature(false);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public string GetLogin(string cms)
+        {
+            byte[] bytes = Convert.FromBase64String(cms);
+            SignedCms signedCms = new SignedCms();
+            signedCms.Decode(bytes);
+
+            var content = signedCms.ContentInfo.Content;
+
+            return Encoding.Unicode.GetString(content);
+        }
+    }
 }

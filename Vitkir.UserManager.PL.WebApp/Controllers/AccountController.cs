@@ -91,14 +91,14 @@ namespace Vitkir.UserManager.PL.WebApp.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult DigitalSignatureLogin([Bind(Include = "Login, Sign")] DigitalSignatureAuthentication model,
+		public ActionResult DigitalSignatureLogin([Bind(Include = "Sign")] DigitalSignatureAuthentication model,
 			string returnUrl)
 		{
-			//todo
+			model.GetLoginFromCms();
 			if (ModelState.IsValid && accountLogic.AccountExist(model.Login))
 			{
 				var account = accountLogic.Get(model.Login);
-				if (account.Login == model.Login && model.VerifySignature())
+				if (account.Login == model.Login && model.VerifySignature(account))
 				{
 					FormsAuthentication.SetAuthCookie(model.Login, true);
 					if (string.IsNullOrWhiteSpace(returnUrl))

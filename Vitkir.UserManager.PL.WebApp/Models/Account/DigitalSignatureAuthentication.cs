@@ -4,25 +4,31 @@ using Vitkir.UserManager.Common.Entities;
 
 namespace Vitkir.UserManager.PL.WebApp.Models.Account
 {
-	public class DigitalSignatureAuthentication : AbstractAccountModel
-	{
-		[DataType(DataType.Text)]
-		[Display(Name = "Подпись")]
-		public string Sign { get; set; }
+    public class DigitalSignatureAuthentication : AbstractAccountModel
+    {
+        [DataType(DataType.Text)]
+        [Display(Name = "Подпись")]
+        public string Sign { get; set; }
 
-		public DigitalSignatureAuthentication()
-		{
-		}
+        public DigitalSignatureAuthentication()
+        {
+        }
 
-		public DigitalSignatureAuthentication(string login, string sign) : base(login)
-		{
-			Sign = sign;
-		}
+        public DigitalSignatureAuthentication(string login, string sign) : base(login)
+        {
+            Sign = sign;
+        }
 
-		public bool VerifySignature()
-		{
-			var auth = new UserAuthentication();
-			return auth.VerifySignature(Sign);
-		}
-	}
+        public void GetLoginFromCms()
+        {
+            var auth = new UserAuthentication();
+            Login = auth.GetLogin(Sign);
+        }
+
+        public bool VerifySignature(Common.Entities.Account account)
+        {
+            var auth = new UserAuthentication();
+            return auth.VerifySignature(account, Sign);
+        }
+    }
 }
